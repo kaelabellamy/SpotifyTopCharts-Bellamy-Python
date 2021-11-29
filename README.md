@@ -21,24 +21,14 @@ For this project select a dataset that includes a binary, nominal class or ordin
 Determine which methodology/model is the “winner” and provide your reasoning (“I like this method because it’s really cool” is a valid answer, but for full credit I’m looking for something that’s more substantive). 
 
 
-features = g1_group.shape[1]
-g1_group[features] = 0
-
-m = min(Z)
-M = max(Z)
-y = (Z-m)/(M-m)
-#%%
-T, X = g1_group
-t = g1_group.HighestPos()
-t[features] = 0
-test = t.iloc[:,0:(features+1)]
-
-m = min(X)
-M = max(X)
-y_test = (X-m)/(M-m)
-#%%
-print(m, M)
-print(y[0:10])
-print(Z[0:10])
-print(g1_group.shape, test.shape, features)
-print(np.unique(y, return_counts=True))
+Method 1: [0,0.5], [0.5,1.0]
+0.70987
+Method 2: [0,0.33], [0.33,0.67], [0.67,1.0]
+0.75739
+Method 3: [0,0.25], [0.25,0.5], [0.5,0.75], [0.75,1.0]
+0.81021
+Method 4: [0,0.2], [0.2,0.4], [0.4,0.6], [0.6,0.8], [0.8,1.0]
+0.73026
+Method 5: [0,0.1], [0.1,0.2], [0.2,0.3], [0.3,0.4], [0.4,0.5], [0.5,0.6], [0.6,0.7], [0.7,0.8], 
+[0.8,0.9], [0.9,1.0]
+0.70987

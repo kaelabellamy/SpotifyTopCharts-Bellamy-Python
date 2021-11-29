@@ -73,9 +73,11 @@ spot_c['Pop'] = 0 + (spot_c['Popularity'] > 20) + (spot_c['Popularity'] > 40) + 
 ### VARIABLE 6 
 #create valence multivariate
 spot_c['Valence'] = pd.to_numeric(spot_c.Valence, errors='coerce')
-spot_c['Valence1'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
-spot_c['Valence2'] = 0 + (spot_c['Valence'] > 0.2) + (spot_c['Valence'] > 0.4) + (spot_c['Valence'] > 0.6) + (spot_c['Valence'] > 0.8)
-spot_c['Valence3'] = 0 + (spot_c['Valence'] > 0.5) 
+spot_c['Valence1'] = 0 + (spot_c['Valence'] > 0.5) 
+spot_c['Valence2'] = 0 + (spot_c['Valence'] > 0.33) + (spot_c['Valence'] > 0.67)
+spot_c['Valence3'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
+spot_c['Valence4'] = 0 + (spot_c['Valence'] > 0.2) + (spot_c['Valence'] > 0.4) + (spot_c['Valence'] > 0.6) + (spot_c['Valence'] > 0.8)
+spot_c['Valence5'] = 0 + (spot_c['Valence'] > 0.1) + (spot_c['Valence'] > 0.2) + (spot_c['Valence'] > 0.3) + (spot_c['Valence'] > 0.4) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.6) + (spot_c['Valence'] > 0.7) + (spot_c['Valence'] > 0.8) + (spot_c['Valence'] > 0.9)
 
 # %%
 #clean up data for models
@@ -135,8 +137,8 @@ g2_groupcount = g2.count()
 g2_groupsum = g2.sum()
 # %%
 # merge sums and counts into data frame (and save for easier use)
-g2_groupcount.to_csv('g1_groupcount.csv')
-g2_groupcount1 = pd.read_csv('g1_groupcount.csv', header=0)
+g2_groupcount.to_csv('g2_groupcount.csv')
+g2_groupcount1 = pd.read_csv('g2_groupcount.csv', header=0)
 
 # %%
 #create new data frame
@@ -179,8 +181,8 @@ g3_groupcount = g3.count()
 g3_groupsum = g3.sum()
 # %%
 # merge sums and counts into data frame (and save for easier use)
-g3_groupcount.to_csv('g1_groupcount.csv')
-g3_groupcount1 = pd.read_csv('g1_groupcount.csv', header=0)
+g3_groupcount.to_csv('g3_groupcount.csv')
+g3_groupcount1 = pd.read_csv('g3_groupcount.csv', header=0)
 
 # %%
 #create new data frame
@@ -210,4 +212,94 @@ y_pred=logreg.predict(X_test)
 errors = abs(y_pred - y_test)
 # %%
 print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+
+
+
+
+
+# %%
+#model version 4 - binomial regression model
+#group by, get counts, get total number for each column 
+#DIFFERENT SPLIT FOR VALENCE
+g4 = spot_c.groupby(['Pop','DaystoTop','Valence4'])
+g4_groupcount = g4.count()
+g4_groupsum = g4.sum()
+# %%
+# merge sums and counts into data frame (and save for easier use)
+g4_groupcount.to_csv('g4_groupcount.csv')
+g4_groupcount1 = pd.read_csv('g4_groupcount.csv', header=0)
+
+# %%
+#create new data frame
+g4_group = pd.DataFrame()
+#%%
+#add in columns for data frame
+g4_group['Pop'] = g4_groupcount1['Pop']
+g4_group['DaystoTop'] = g4_groupcount1['DaystoTop']
+g4_group['DaystoTop'] = g4_group['DaystoTop'].str.replace('days', '')
+g4_group['DaystoTop'] = g4_group['DaystoTop'].astype(float)
+g4_group['DaystoTop'] = 0 + (g4_group['DaystoTop'] > 50.0) + (g4_group['DaystoTop'] > 100.0) + (g4_group['DaystoTop'] > 200.0)+ (g4_group['DaystoTop'] > 500.0)+ (g4_group['DaystoTop'] > 1000.0)+ (g4_group['DaystoTop'] > 1500.0)
+
+# %%
+#add in more columns for data frame
+g4_group['HighestPos'] = spot_c['HighestPos']
+
+# %%
+X = g4_group.drop('HighestPos', axis=1) # Features
+y = g4_group['HighestPos'] # Target variable
+#%%
+#Split data into training and test set
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+# %%
+logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
+logreg.fit(X_train,y_train)
+y_pred=logreg.predict(X_test)
+errors = abs(y_pred - y_test)
+# %%
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+
+
+# %%
+#model version 5 - binomial regression model
+#group by, get counts, get total number for each column 
+#DIFFERENT SPLIT FOR VALENCE
+g5 = spot_c.groupby(['Pop','DaystoTop','Valence5'])
+g5_groupcount = g5.count()
+g5_groupsum = g5.sum()
+# %%
+# merge sums and counts into data frame (and save for easier use)
+g5_groupcount.to_csv('g5_groupcount.csv')
+g5_groupcount1 = pd.read_csv('g5_groupcount.csv', header=0)
+
+# %%
+#create new data frame
+g5_group = pd.DataFrame()
+#%%
+#add in columns for data frame
+g5_group['Pop'] = g5_groupcount1['Pop']
+g5_group['DaystoTop'] = g5_groupcount1['DaystoTop']
+g5_group['DaystoTop'] = g5_group['DaystoTop'].str.replace('days', '')
+g5_group['DaystoTop'] = g5_group['DaystoTop'].astype(float)
+g5_group['DaystoTop'] = 0 + (g5_group['DaystoTop'] > 50.0) + (g5_group['DaystoTop'] > 100.0) + (g5_group['DaystoTop'] > 200.0)+ (g5_group['DaystoTop'] > 500.0)+ (g5_group['DaystoTop'] > 1000.0)+ (g5_group['DaystoTop'] > 1500.0)
+
+# %%
+#add in more columns for data frame
+g5_group['HighestPos'] = spot_c['HighestPos']
+
+# %%
+X = g5_group.drop('HighestPos', axis=1) # Features
+y = g5_group['HighestPos'] # Target variable
+#%%
+#Split data into training and test set
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+# %%
+logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
+logreg.fit(X_train,y_train)
+y_pred=logreg.predict(X_test)
+errors = abs(y_pred - y_test)
+# %%
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
 # %%
