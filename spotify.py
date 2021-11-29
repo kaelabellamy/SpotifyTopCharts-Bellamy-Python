@@ -11,6 +11,8 @@ from plotnine import *
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 #%%
 #import data
@@ -52,6 +54,9 @@ spot_c['Release_Date'] = pd.to_datetime(spot_c['Release_Date'], yearfirst=True)
 # %%
 #find the # of days it took to get to the top for each song aka new column
 spot_c['DaystoTop'] = abs(spot_c['EndHighWeek']-spot_c['Release_Date'])
+#spot_c['DaystoTop'] = spot_c['DaystoTop'].str.replace('days', '')
+#spot_c['DaystoTop'] = spot_c['DaystoTop'].astype(float)
+#spot_c['DaystoTop'] = 0 + (spot_c['DaystoTop'] > 500.0) + (spot_c['DaystoTop'] > 1000.0) + (spot_c['DaystoTop'] > 1500.0) + (spot_c['DaystoTop'] > 2000.0) + (spot_c['DaystoTop'] > 5000.0) + (spot_c['DaystoTop'] > 10000.0) + + (spot_c['DaystoTop'] > 15000.0)
 
 
 
@@ -69,6 +74,12 @@ spot_c['HighestPos'] = 0 + (spot_c['Highest_Charting_Position'] > 20.0)
 spot_c['Popularity'] = pd.to_numeric(spot_c['Popularity'],errors = 'coerce')
 #divide popularity into multivariate
 spot_c['Pop'] = 0 + (spot_c['Popularity'] > 20) + (spot_c['Popularity'] > 40) + (spot_c['Popularity'] > 60) + (spot_c['Popularity'] > 80)
+
+#%%
+### VARIABLE 6 
+#create valence bins
+spot_c['Valence'] = pd.to_numeric(spot_c.Valence, errors='coerce')
+spot_c['Valence'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
 
 
 
@@ -107,22 +118,22 @@ g1_group['DaystoTop'] = g1_group['DaystoTop'].astype(float)
 #g1_group['Valence'] = g1_groupcount1['Valence']
 # %%
 #add in more columns for data frame
-g1_group['HighestPos'] = g1_groupcount1['HighestPos']
+g1_group['HighestPos'] = spot_c['HighestPos']
 #g1_group['HighestPos'] = g1_groupsum1['HighestPos']
 #g1_group['Pos'] = g1_group['Total'] - g1_group['HighestPos']
 
 # %%
-X = g1_group # Features
+X = g1_group.drop('HighestPos', axis=1) # Features
 y = g1_group['HighestPos'] # Target variable
-# %%
+#%%
+#Split data into training and test set
 X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
 # %%
-logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=5000)
+logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
 logreg.fit(X_train,y_train)
 y_pred=logreg.predict(X_test)
 errors = abs(y_pred - y_test)
 # %%
 print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
-#print("Precision:",  metrics.precision_score(y_test, y_pred))
-#print("Recall:",metrics.recall_score(y_test, y_pred))
+
 # %%
