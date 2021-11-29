@@ -54,18 +54,12 @@ spot_c['Release_Date'] = pd.to_datetime(spot_c['Release_Date'], yearfirst=True)
 # %%
 #find the # of days it took to get to the top for each song aka new column
 spot_c['DaystoTop'] = abs(spot_c['EndHighWeek']-spot_c['Release_Date'])
-#spot_c['DaystoTop'] = spot_c['DaystoTop'].str.replace('days', '')
-#spot_c['DaystoTop'] = spot_c['DaystoTop'].astype(float)
-#spot_c['DaystoTop'] = 0 + (spot_c['DaystoTop'] > 500.0) + (spot_c['DaystoTop'] > 1000.0) + (spot_c['DaystoTop'] > 1500.0) + (spot_c['DaystoTop'] > 2000.0) + (spot_c['DaystoTop'] > 5000.0) + (spot_c['DaystoTop'] > 10000.0) + + (spot_c['DaystoTop'] > 15000.0)
-
 
 
 # %%
 ### VARIABLE 4
 #create binomial value for top charts 0 if <= 20 1 if >20 
 spot_c['HighestPos'] = 0 + (spot_c['Highest_Charting_Position'] > 20.0) 
-
-
 
 
 # %%
@@ -77,34 +71,27 @@ spot_c['Pop'] = 0 + (spot_c['Popularity'] > 20) + (spot_c['Popularity'] > 40) + 
 
 #%%
 ### VARIABLE 6 
-#create valence bins
+#create valence multivariate
 spot_c['Valence'] = pd.to_numeric(spot_c.Valence, errors='coerce')
-spot_c['Valence'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
-
-
-
+spot_c['Valence1'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
+spot_c['Valence2'] = 0 + (spot_c['Valence'] > 0.2) + (spot_c['Valence'] > 0.4) + (spot_c['Valence'] > 0.6) + (spot_c['Valence'] > 0.8)
+spot_c['Valence3'] = 0 + (spot_c['Valence'] > 0.5) 
 
 # %%
 #clean up data for models
 spotfinal = spot_c.drop(['BeginHighWeek', 'Popularity', 'Week_of_Highest_Charting'], axis=1, inplace=True)
 
-
-
-
 # %%
 #model version 1 - binomial regression model
 #group by, get counts, get total number for each column 
-#DIFFERENT VARIABLE USED IN THIS VERSION IS VALENCE
-g1 = spot_c.groupby(['Pop','DaystoTop','Valence'])
+#DIFFERENT SPLIT FOR VALENCE
+g1 = spot_c.groupby(['Pop','DaystoTop','Valence1'])
 g1_groupcount = g1.count()
 g1_groupsum = g1.sum()
 # %%
 # merge sums and counts into data frame (and save for easier use)
 g1_groupcount.to_csv('g1_groupcount.csv')
 g1_groupcount1 = pd.read_csv('g1_groupcount.csv', header=0)
- 
-#g1_groupsum.to_csv('g1_groupsum.csv')
-#g1_groupsum1 = pd.read_csv('g1_groupsum.csv', header=0)
 
 # %%
 #create new data frame
@@ -116,12 +103,10 @@ g1_group['DaystoTop'] = g1_groupcount1['DaystoTop']
 g1_group['DaystoTop'] = g1_group['DaystoTop'].str.replace('days', '')
 g1_group['DaystoTop'] = g1_group['DaystoTop'].astype(float)
 g1_group['DaystoTop'] = 0 + (g1_group['DaystoTop'] > 50.0) + (g1_group['DaystoTop'] > 100.0) + (g1_group['DaystoTop'] > 200.0)+ (g1_group['DaystoTop'] > 500.0)+ (g1_group['DaystoTop'] > 1000.0)+ (g1_group['DaystoTop'] > 1500.0)
-#g1_group['Valence'] = g1_groupcount1['Valence']
+
 # %%
 #add in more columns for data frame
 g1_group['HighestPos'] = spot_c['HighestPos']
-#g1_group['HighestPos'] = g1_groupsum1['HighestPos']
-#g1_group['Pos'] = g1_group['Total'] - g1_group['HighestPos']
 
 # %%
 X = g1_group.drop('HighestPos', axis=1) # Features
@@ -141,4 +126,88 @@ print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
 
 
 
+# %%
+#model version 2 - binomial regression model
+#group by, get counts, get total number for each column 
+#DIFFERENT SPLIT FOR VALENCE
+g2 = spot_c.groupby(['Pop','DaystoTop','Valence2'])
+g2_groupcount = g2.count()
+g2_groupsum = g2.sum()
+# %%
+# merge sums and counts into data frame (and save for easier use)
+g2_groupcount.to_csv('g1_groupcount.csv')
+g2_groupcount1 = pd.read_csv('g1_groupcount.csv', header=0)
+
+# %%
+#create new data frame
+g2_group = pd.DataFrame()
+#%%
+#add in columns for data frame
+g2_group['Pop'] = g2_groupcount1['Pop']
+g2_group['DaystoTop'] = g2_groupcount1['DaystoTop']
+g2_group['DaystoTop'] = g2_group['DaystoTop'].str.replace('days', '')
+g2_group['DaystoTop'] = g2_group['DaystoTop'].astype(float)
+g2_group['DaystoTop'] = 0 + (g2_group['DaystoTop'] > 50.0) + (g2_group['DaystoTop'] > 100.0) + (g2_group['DaystoTop'] > 200.0)+ (g2_group['DaystoTop'] > 500.0)+ (g2_group['DaystoTop'] > 1000.0)+ (g2_group['DaystoTop'] > 1500.0)
+
+# %%
+#add in more columns for data frame
+g2_group['HighestPos'] = spot_c['HighestPos']
+
+# %%
+X = g2_group.drop('HighestPos', axis=1) # Features
+y = g2_group['HighestPos'] # Target variable
+#%%
+#Split data into training and test set
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+# %%
+logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
+logreg.fit(X_train,y_train)
+y_pred=logreg.predict(X_test)
+errors = abs(y_pred - y_test)
+# %%
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+
+
+
+# %%
+#model version 3 - binomial regression model
+#group by, get counts, get total number for each column 
+#DIFFERENT SPLIT FOR VALENCE
+g3 = spot_c.groupby(['Pop','DaystoTop','Valence3'])
+g3_groupcount = g3.count()
+g3_groupsum = g3.sum()
+# %%
+# merge sums and counts into data frame (and save for easier use)
+g3_groupcount.to_csv('g1_groupcount.csv')
+g3_groupcount1 = pd.read_csv('g1_groupcount.csv', header=0)
+
+# %%
+#create new data frame
+g3_group = pd.DataFrame()
+#%%
+#add in columns for data frame
+g3_group['Pop'] = g3_groupcount1['Pop']
+g3_group['DaystoTop'] = g3_groupcount1['DaystoTop']
+g3_group['DaystoTop'] = g3_group['DaystoTop'].str.replace('days', '')
+g3_group['DaystoTop'] = g3_group['DaystoTop'].astype(float)
+g3_group['DaystoTop'] = 0 + (g3_group['DaystoTop'] > 50.0) + (g3_group['DaystoTop'] > 100.0) + (g3_group['DaystoTop'] > 200.0)+ (g3_group['DaystoTop'] > 500.0)+ (g3_group['DaystoTop'] > 1000.0)+ (g3_group['DaystoTop'] > 1500.0)
+
+# %%
+#add in more columns for data frame
+g3_group['HighestPos'] = spot_c['HighestPos']
+
+# %%
+X = g3_group.drop('HighestPos', axis=1) # Features
+y = g3_group['HighestPos'] # Target variable
+#%%
+#Split data into training and test set
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+# %%
+logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
+logreg.fit(X_train,y_train)
+y_pred=logreg.predict(X_test)
+errors = abs(y_pred - y_test)
+# %%
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
 # %%
