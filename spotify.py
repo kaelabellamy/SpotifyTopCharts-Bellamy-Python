@@ -104,7 +104,7 @@ g1_group['Pop'] = g1_groupcount1['Pop']
 g1_group['DaystoTop'] = g1_groupcount1['DaystoTop']
 g1_group['DaystoTop'] = g1_group['DaystoTop'].str.replace('days', '')
 g1_group['DaystoTop'] = g1_group['DaystoTop'].astype(float)
-g1_group['DaystoTop'] = 0 + (g1_group['DaystoTop'] > 50.0) + (g1_group['DaystoTop'] > 100.0) + (g1_group['DaystoTop'] > 200.0)+ (g1_group['DaystoTop'] > 500.0)+ (g1_group['DaystoTop'] > 1000.0)+ (g1_group['DaystoTop'] > 1500.0)
+g1_group['DaystoTop'] = 0 + (g1_group['DaystoTop'] > 50.0) + (g1_group['DaystoTop'] > 100.0) + (g1_group['DaystoTop'] > 200.0)+ (g1_group['DaystoTop'] > 500.0) + (g1_group['DaystoTop'] > 1000.0)+ (g1_group['DaystoTop'] > 1500.0)
 
 # %%
 #add in more columns for data frame
