@@ -19,6 +19,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 spot = pd.read_csv("C:/Users/kaela/Desktop/datamining/dataminingproject/spotify_dataset.csv") 
 spot.head()
 
+
 # %%
 #look at data and do some light cleaning
 spot_c = spot.filter(['Highest Charting Position', 'Week of Highest Charting', 
@@ -26,6 +27,7 @@ spot_c = spot.filter(['Highest Charting Position', 'Week of Highest Charting',
         'Release Date', 'Song Name', 'Popularity', 
          'Song ID', 'Genre', 'Acousticness', 'Tempo',
          'Duration', 'Valence', 'Chord'])
+         
 spot_c.columns = spot_c.columns.str.replace(' ','_')
 spot_c = spot_c.dropna()
 #%%
