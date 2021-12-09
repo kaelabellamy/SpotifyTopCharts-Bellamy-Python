@@ -11,8 +11,12 @@ import seaborn as sns
 from pandas._libs.missing import NA
 from plotnine import *
 from sklearn import metrics
+from sklearn.metrics import f1_score
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import plot_confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
@@ -83,6 +87,16 @@ spot_c['Tempo'] = pd.to_numeric(spot_c['Tempo'],errors = 'coerce')
 spot_c['Valence'] = pd.to_numeric(spot_c.Valence, errors='coerce')
 spot_c['Valence1'] = 0 + (spot_c['Valence'] > 0.25) + (spot_c['Valence'] > 0.5) + (spot_c['Valence'] > 0.75)
 
+#%%
+#look at data features
+valencevshighest = (ggplot(data = spot_c, mapping = aes(x='Valence', y='HighestPos'))
+)
+valencevshighest + geom_jitter()
+#%%
+tempovshighest = (ggplot(data = spot_c, mapping = aes(x='Tempo', y='HighestPos'))
+)
+tempovshighest + geom_jitter()
+
 # %%
 #clean up data for models
 spotfinal = spot_c.drop(['BeginHighWeek', 'Week_of_Highest_Charting'], axis=1, inplace=True)
@@ -129,6 +143,12 @@ errors = abs(y_pred - y_test)
 
 print("Linear Regression accuracy is:", metrics.accuracy_score(y_test, y_pred))
 
+print("Linear Regression f1 score is:", f1_score(y_test, y_pred))
+#%%
+clf.fit(X_train, y_train)
+SVC(random_state=0)
+plot_confusion_matrix(clf, X_test, y_test)  
+plt.show()
 #%%
 plt.figure(0).clf()
 
@@ -146,7 +166,12 @@ frst.fit(X_train, y_train)
 test_frst = frst.predict(X_test)
 
 print('Forest accuracy is: ', np.mean(test_frst==y_test))
-
+print("Forest Accuracy f1 score is:", f1_score(y_test, test_frst))
+#%%
+clf.fit(X_train, y_train)
+SVC(random_state=0)
+plot_confusion_matrix(clf, X_test, y_test)  
+plt.show()
 #%%
 plt.figure(0).clf()
 
@@ -162,6 +187,7 @@ dtclf = clf.fit(X_train, y_train)
 preds = clf.predict(X_test)
 
 print('Tree accuracy is: ', np.mean(preds==y_test))
+print("Tree f1 score is:", f1_score(y_test, preds))
 
 #%%
 plt.figure(0).clf()
@@ -182,6 +208,7 @@ data.fit(X_train, y_train)
 test = data.predict(X_test)
 
 print('MLP accuracy is: ', np.mean(test==y_test))
+print("MLP accuracy f1 score is:", f1_score(y_test, test))
 
 # %%
 plt.figure(0).clf()
