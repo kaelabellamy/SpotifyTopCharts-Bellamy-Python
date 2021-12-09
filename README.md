@@ -1,22 +1,13 @@
-# dataminingproject
+## Project Purpose: Take one to two paragraphs to explain your goals. Why did you use this data? What skills are you going to demonstrate? Did you do this work for a client?
 
-You must “engineer” (create) 5 new data columns/fields that are used in your models. Provide rationale as to the reason that you chose the creation of these columns.
-- Column 1: BeginHighWeek
-- Column 2: End High Week
-- Column 3: # of days it took to get to highest charting position aks DaystoTop
-- Column 4: binomial for highest position aka HighestPos
-- Column 5: popularity by category aka Pop
+The goal of this project is to predict if a song would make it into the top 20 charts on Spotify or not. I chose the data I did because it provides the recent top charts and thorough information about them. It was accessed through Kaggle, but the data is originally from Spotipy Python library.
 
+The project will data munging, visualization techniques, and various machine learning methods to decide what is the best model based off of the results. In addition, it will explain the results through visualization and various different types of precision methods. This work was done for a class project, so I chose this data for fun to show the possibilities with any type of data. 
 
-# Binomal Regression
-https://timeseriesreasoning.com/contents/binomial-regression-model/
-https://www.datacamp.com/community/tutorials/understanding-logistic-regression-python
+## Tools used: Provide an overview of the programming languages and packages you leveraged for this work. You could provide links to the pertinent reading material that you leveraged to complete the job. Provide links to your final scripts stored in your repository.
 
-Create multiple models using different variables: DaystoTop, HighestPos, and ... 
+For this project, I specifically used Python. I find it to work well with machine learning methods. Besides the basic Python packages, I used sci-kit learn. It has many packages that work well with machine learning modeling and creating visualizations from those models. I also used pyplot to help with some of the visualizations created.
 
-Decide best model.
+## Results: This is your conclusion. Explain why your work matters. How could others use it? What are your next steps? Show some key findings.
 
-For this project select a dataset that includes a binary, nominal class or ordinal class value that you wish to predict (or a continuous value data element that could be used to create a label to predict) and create a set of “classifiers” (prediction models) that predict the categorical output. 
-
-Determine which methodology/model is the “winner” and provide your reasoning (“I like this method because it’s really cool” is a valid answer, but for full credit I’m looking for something that’s more substantive). 
-
+From the models created, I decided random forest was the best classification model to use. It had an F1 score of 0.94, which is fairly high. In addition, we could see from the confusion matrix from the test model, that it had a reasonable proportion of values. This model would be great to be used in a production setting to help predit profits from a song. You could add in more features to work on accuracy. I am using this model for a class project, but I think it would be reasonable to further develop and be used in music production. 
