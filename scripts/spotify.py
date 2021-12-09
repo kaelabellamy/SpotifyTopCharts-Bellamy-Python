@@ -78,7 +78,8 @@ spot_c['HighestPos'] = 0 + (spot_c['Highest_Charting_Position'] > 20.0)
 #change pop variable to float from string
 spot_c['Tempo'] = pd.to_numeric(spot_c['Tempo'],errors = 'coerce')
 #divide popularity into multivariate
-#spot_c['Pop'] = 0 + (spot_c['Popularity'] > 20) + (spot_c['Popularity'] > 40) + (spot_c['Popularity'] > 60) + (spot_c['Popularity'] > 80)
+#spot_c['Pop'] = 0 + (spot_c['Popularity'] > 20) + (spot_c['Popularity'] > 40) + (spot_c['Popularity'] > 60) 
+# + (spot_c['Popularity'] > 80)
 
 
 #%%

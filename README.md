@@ -20,15 +20,3 @@ For this project select a dataset that includes a binary, nominal class or ordin
 
 Determine which methodology/model is the “winner” and provide your reasoning (“I like this method because it’s really cool” is a valid answer, but for full credit I’m looking for something that’s more substantive). 
 
-
-Method 1: [0,0.5], [0.5,1.0]
-0.70987
-Method 2: [0,0.33], [0.33,0.67], [0.67,1.0]
-0.75739
-Method 3: [0,0.25], [0.25,0.5], [0.5,0.75], [0.75,1.0]
-0.81021
-Method 4: [0,0.2], [0.2,0.4], [0.4,0.6], [0.6,0.8], [0.8,1.0]
-0.73026
-Method 5: [0,0.1], [0.1,0.2], [0.2,0.3], [0.3,0.4], [0.4,0.5], [0.5,0.6], [0.6,0.7], [0.7,0.8], 
-[0.8,0.9], [0.9,1.0]
-0.70987
