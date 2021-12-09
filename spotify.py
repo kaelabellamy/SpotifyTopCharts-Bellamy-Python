@@ -5,8 +5,9 @@
 import pandas as pd
 import numpy as np
 import datetime as dt
-import scipy.stats
+import scipy.stats as st
 import matplotlib.pyplot as plt
+import seaborn as sns
 from pandas._libs.missing import NA
 from plotnine import *
 from sklearn import metrics
@@ -123,7 +124,7 @@ X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state
 #Linear Regression Model
 logreg = LogisticRegression(solver = 'saga', random_state = 67, max_iter=10000)
 logreg.fit(X_train,y_train)
-y_pred=logreg.predict(X_test)
+y_pred =  logreg.predict(X_test)
 errors = abs(y_pred - y_test)
 
 print("Linear Regression accuracy is:", metrics.accuracy_score(y_test, y_pred))
@@ -149,8 +150,8 @@ print('Forest accuracy is: ', np.mean(test_frst==y_test))
 #%%
 plt.figure(0).clf()
 
-fpr, tpr, thresh = metrics.roc_curve(y_test, y_pred)
-auc = metrics.roc_auc_score(y_test, y_pred)
+fpr, tpr, thresh = metrics.roc_curve(y_test, test_frst)
+auc = metrics.roc_auc_score(y_test, test_frst)
 plt.plot(fpr,tpr,label="Random Forest, auc="+str(auc))
 
 plt.legend(loc=0)
@@ -163,6 +164,15 @@ preds = clf.predict(X_test)
 print('Tree accuracy is: ', np.mean(preds==y_test))
 
 #%%
+plt.figure(0).clf()
+
+fpr, tpr, thresh = metrics.roc_curve(y_test, preds)
+auc = metrics.roc_auc_score(y_test, preds)
+plt.plot(fpr,tpr,label="Decision Tree, auc="+str(auc))
+
+plt.legend(loc=0)
+
+#%%
 #MLP Classifier Model
 MLP = MLPClassifier
 
@@ -173,4 +183,12 @@ test = data.predict(X_test)
 
 print('MLP accuracy is: ', np.mean(test==y_test))
 
+# %%
+plt.figure(0).clf()
+
+fpr, tpr, thresh = metrics.roc_curve(y_test, test)
+auc = metrics.roc_auc_score(y_test, test)
+plt.plot(fpr,tpr,label="MLP Classifier, auc="+str(auc))
+
+plt.legend(loc=0)
 # %%
